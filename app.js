@@ -163,6 +163,7 @@ app.get('/shopping', checkAuthenticated, (req, res) => {
       });
 });
 
+//
 app.post('/add-to-cart/:id', checkAuthenticated, (req, res) => {
     const productId = parseInt(req.params.id);
     const quantity = parseInt(req.body.quantity) || 1;
