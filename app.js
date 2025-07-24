@@ -132,7 +132,7 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
             console.error('Error inserting person:', error);
             res.status(500).send('Error adding person');
         } else {
-            res.redirect('/addPerson');
+            res.redirect('/addPatient');
         }
     });
 });
