@@ -138,6 +138,29 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
 });
 
 //Nicholas's Search Function
+app.get('/search', (req, res) => {
+  const patientId = req.query.id;
+
+  if (!patientId) {
+    return res.render('search', {});
+  }
+
+  const sql = 'SELECT * FROM patients WHERE patient_id = ?';
+
+  connection.query(sql, [patientId], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    if (results.length > 0) {
+      res.render('search', { patient: results[0] });
+    } else {
+      res.render('search', { notFound: true });
+    }
+  });
+});
+
 app.get('/patient/:id', (req, res) => {
   const patientId = req.params.id;
 
