@@ -138,7 +138,7 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
 });
 
 //Nicholas's Search Function
-app.get('/search', (req, res) => {
+app.get('/Search', (req, res) => {
   const patientId = req.query.id;
 
   if (!patientId) {
@@ -161,7 +161,7 @@ app.get('/search', (req, res) => {
   });
 });
 
-app.get('/patient/:id', (req, res) => {
+app.get('/patients/:id', (req, res) => {
   const patientId = req.params.id;
 
   const sql = 'SELECT * FROM patients WHERE patient_id = ?';
