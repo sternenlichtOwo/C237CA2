@@ -137,6 +137,7 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
+//Nicholas's Search Function
 app.get('/patient/:id', (req, res) => {
   const patientId = req.params.id;
 
@@ -146,7 +147,7 @@ app.get('/patient/:id', (req, res) => {
     if (err) {
       console.error('Database error:', err);
       return res.status(500).send('Database server error');
-    }//Nicholas's Search Function
+    }
 
     if (results.length === 0) {
       return res.status(404).send('Patient not found');
