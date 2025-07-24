@@ -116,7 +116,7 @@ app.post('/login', (req, res) => {
         }
     });
 });
-
+//Khine's
 app.get('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
     res.render('addPatient', { user: req.session.user });
 });
