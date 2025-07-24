@@ -137,6 +137,25 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
     });
 });
 
+app.get('/patient/:id', (req, res) => {
+  const patientId = req.params.id;
+
+  const sql = 'SELECT * FROM patients WHERE patient_id = ?';
+
+  connection.query(sql, [patientId], (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).send('Database server error');
+    }//Nicholas's Search Function
+
+    if (results.length === 0) {
+      return res.status(404).send('Patient not found');
+    }
+
+    res.render('patient', { patient: results[0] });
+  });
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
