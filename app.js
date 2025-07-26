@@ -118,7 +118,7 @@ app.post('/login', (req, res) => {
 });
 
 //Frederick's in progress
-app.get('/editpage/:id',(req,res)=>{
+app.get('/editpage/:id',checkAuthenticated, checkAdmin,(req,res)=>{
     const patient_id=req.params.id;
     const sql ='SELECT * FROM patient WHERE patient_id=?';
     //Fetech data from mysql based on the patient ID
@@ -139,18 +139,14 @@ app.get('/editpage/:id',(req,res)=>{
     })
 })
 
-app.post('/editPatient/:id',upload.single('image'),(req, res) => {
-    const patient_id = req.params.id;
+app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
+    const patient_id = req.params.id;   
     //Extract patient data from the request body
     const{full_name, date_of_birth, gender, address, contact, next_of_kin} =req.body;
-    let image = req.body.currentImage; //retrieve current image filename
-    if (req.file){ //if new image is uploaded
-        image = req.file.filename; //set image to be new image filename
-    }
     const sql = 'UPDATE patient SET full_name =?, date_of_birth=?, gender=?, address=?, contact=?, next_of_kin=?, image =? WHERE patient_id =?';
 
     //Insert the new patient into the database
-    connection.query(sql,[full_name, date_of_birth, gender, address, contact, next_of_kin, image, patient_id], (error,results) =>{
+    connection.query(sql,[full_name, date_of_birth, gender, address, contact, next_of_kin, patient_id], (error,results) =>{
         if (error){
             //handle any error that occurs during the database operation
             console.error("Error updating patient:", error);
