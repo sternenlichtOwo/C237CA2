@@ -118,43 +118,43 @@ app.post('/login', (req, res) => {
 });
 
 //Frederick's in progress
-app.get('/editProduct/:id',(req,res)=>{
-    const productId=req.params.id;
-    const sql ='SELECT * FROM products WHERE productId=?';
-    //Fetech data from mysql based on the product ID
-    connection.query(sql,[productId],(error,results)=>{
+app.get('/editpage/:id',(req,res)=>{
+    const patient_id=req.params.id;
+    const sql ='SELECT * FROM patient WHERE patient_id=?';
+    //Fetech data from mysql based on the patient ID
+    connection.query(sql,[patient_id],(error,results)=>{
         if(error){
             console.error('Database query error:',error.message);
-            return res.status(500).send('Error retrieving product by ID');
+            return res.status(500).send('Error retrieving patient by ID');
 
         }
-        //check if any product with the given ID was found
+        //check if any patient with the given ID was found
         if (results.length>0) {
-            //render HTML pagewith the product data
-            res.render('editProduct',{product:results[0]});
+            //render HTML pagewith the patient data
+            res.render('editpage',{patient:results[0]});
         } else{
-            //If no product with the given ID was found, render a 404 page ot handle it accordingly
-            res.status(404).send('product not found')
+            //If no patient with the given ID was found, render a 404 page ot handle it accordingly
+            res.status(404).send('patient not found')
         }
     })
 })
 
-app.post('/editProduct/:id',upload.single('image'),(req, res) => {
-    const productId = req.params.id;
-    //Extract product data from the request body
-    const{name, quantity,price} =req.body;
+app.post('/editPatient/:id',upload.single('image'),(req, res) => {
+    const patient_id = req.params.id;
+    //Extract patient data from the request body
+    const{full_name, date_of_birth, gender, address, contact, next_of_kin} =req.body;
     let image = req.body.currentImage; //retrieve current image filename
     if (req.file){ //if new image is uploaded
         image = req.file.filename; //set image to be new image filename
     }
-    const sql = 'UPDATE products SET productName =?, quantity=?, price=?,image =? WHERE productId =?';
-    
-    //Insert the new product into the database
-    connection.query(sql,[name, quantity, price,image, productId], (error,results) =>{
+    const sql = 'UPDATE patient SET full_name =?, date_of_birth=?, gender=?, address=?, contact=?, next_of_kin=?, image =? WHERE patient_id =?';
+
+    //Insert the new patient into the database
+    connection.query(sql,[full_name, date_of_birth, gender, address, contact, next_of_kin, image, patient_id], (error,results) =>{
         if (error){
             //handle any error that occurs during the database operation
-            console.error("Error updating product:", error);
-            res.status(500).send('Error updating product');
+            console.error("Error updating patient:", error);
+            res.status(500).send('Error updating patient');
         }else{
             //send a success response
             res.redirect('/');
