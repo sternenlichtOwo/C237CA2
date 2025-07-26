@@ -30,12 +30,12 @@
         <br>
         <div class="text-center">
           <% if (patient) { %> 
-            <form action="/editdata/<%= patient.patientId %>" method="POST" enctype="multipart/form-data">
+            <form action="/editdata/<%= patient.patient_id %>" method="POST" enctype="multipart/form-data">
                 <label for="name">patient Name:</label><br>
-                <input type="text" id="name" name="name" value = "<%= patient.name %>" required><br><br>
+                <input type="text" id="name" name="name" value = "<%= patient.full_name %>" required><br><br>
 
                 <label for="DOB">Date of birth:</label><br>
-                <input type="date" id="DOB" name="DOB" value = "<%= patient.DOB %>" required><br><br>
+                <input type="date" id="DOB" name="DOB" value = "<%= patient.date_of_birth %>" required><br><br>
 
                 <label for="gender">gender:</label><br>
                 <input type="text" id="gender" name="gender" value = "<%= patient.gender %>" required><br><br>
