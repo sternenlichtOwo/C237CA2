@@ -162,23 +162,42 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
 
 
 //Khine's
+//GET /addPatient route
 app.get('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
-    res.render('addPatient', { user: req.session.user });
+    res.render('addPatient', {
+        user: req.session.user,
+        messages: {
+            success: req.flash('success'),
+            error: req.flash('error')
+        },
+        formData: req.flash('formData')[0]  // used to preserve user input
+    });
 });
 
+//POST /addPatient route
 app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
     const { full_name, date_of_birth, gender, address, contact, next_of_kin } = req.body;
 
+
+    if (!full_name || !date_of_birth || !gender || !address || !contact || !next_of_kin) {
+        req.flash('error', 'All fields must be filled in.');
+        req.flash('formData', req.body);
+        return res.redirect('/addPatient');
+    }
+
+    // Insert data into database
     const sql = `INSERT INTO disable_people (full_name, date_of_birth, gender, address, contact, next_of_kin)
                  VALUES (?, ?, ?, ?, ?, ?)`;
 
     connection.query(sql, [full_name, date_of_birth, gender, address, contact, next_of_kin], (error, result) => {
         if (error) {
             console.error('Error inserting person:', error);
-            res.status(500).send('Error adding person');
-        } else {
-            res.redirect('/addPatient');
+            req.flash('error', 'Error adding patient.');
+            return res.redirect('/addPatient');
         }
+
+        req.flash('success', 'Patient added successfully!');
+        res.redirect('/addPatient');
     });
 });
 
