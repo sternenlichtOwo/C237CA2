@@ -225,10 +225,60 @@ app.get('/patients/:id', (req, res) => {
   });
 });
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/');
+// Fadiah registartion
+// Route to show register form
+app.get('/register', (req, res) => {
+  res.render('register');
 });
+
+// Route to handle register form submission
+app.post('/register', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+  connection.query(sql, [username, password], (err, result) => {
+    res.redirect('/login');
+  });
+});
+
+// Route to show login form
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+// Route to handle login form submission
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+  connection.query(sql, [username, password], (err, results) => {
+    if (results.length > 0) {
+      req.session.user = username;
+      res.redirect('/dashboard');
+    } else {
+      res.send('Invalid login');
+    }
+  });
+});
+
+// Route to show dashboard (protected page)
+app.get('/dashboard', (req, res) => {
+  if (req.session.user) {
+    res.send('Welcome, ' + req.session.user);
+  } else {
+    res.redirect('/login');
+  }
+});
+
+// Route to logout
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login');
+});
+
+// End of Fadiah Registration
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
