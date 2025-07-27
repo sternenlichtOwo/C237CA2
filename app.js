@@ -5,10 +5,11 @@ const flash = require('connect-flash');
 const app = express();
 
 const connection = mysql.createConnection({
-    host: 's5d-75.h.filess.io',
-    user: 'c237Disable_attackwife',
+    host: 'localhost',
+    user: 'root',
     password: '',
-    database: 'c237Disable_attackwife' 
+    database: 'c237_imh'
+  });
 });
 
 connection.connect((err) => {
