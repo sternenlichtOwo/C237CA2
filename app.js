@@ -167,7 +167,7 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
 //jazz
 //delete route
 app.get('/deletepatient/:id', (req, res) => {
-    const productId = req.params.id;
+    const patient_id = req.params.id;
 
     connection.query('DELETE FROM products WHERE patient_id = ?', [patient_id], (error, results) => {
         if (error) {
