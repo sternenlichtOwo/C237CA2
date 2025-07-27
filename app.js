@@ -209,6 +209,7 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
 //---Khine's
 
 //Nicholas's Search Function
+//GET /Search route
 app.get('/Search', (req, res) => {
   const patientId = req.query.id;
 
