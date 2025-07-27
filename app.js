@@ -9,7 +9,6 @@ const connection = mysql.createConnection({
     user: 'root',
     password: '',
     database: 'c237_imh'
-  });
 });
 
 connection.connect((err) => {
