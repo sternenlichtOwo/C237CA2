@@ -161,7 +161,7 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
 
 
 
-//Khine's
+//Khine's---
 //GET /addPatient route
 app.get('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
     res.render('addPatient', {
@@ -200,6 +200,7 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
         res.redirect('/addPatient');
     });
 });
+//---Khine's
 
 //Nicholas's Search Function
 app.get('/Search', (req, res) => {
