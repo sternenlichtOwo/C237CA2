@@ -145,6 +145,11 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
     const{full_name, date_of_birth, gender, address, contact, next_of_kin} =req.body;
     const sql = 'UPDATE patient SET full_name =?, date_of_birth=?, gender=?, address=?, contact=?, next_of_kin=? WHERE patient_id =?';
 
+    //Check if all required fields are provided
+    if (!full_name || !date_of_birth || !gender || !address || !contact || !next_of_kin) {
+    return res.status(400).send('All fields are required');
+}
+
     //Insert the new patient into the database
     connection.query(sql,[full_name, date_of_birth, gender, address, contact, next_of_kin, patient_id], (error,results) =>{
         if (error){
