@@ -143,7 +143,7 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
     const patient_id = req.params.id;   
     //Extract patient data from the request body
     const{full_name, date_of_birth, gender, address, contact, next_of_kin} =req.body;
-    const sql = 'UPDATE patient SET full_name =?, date_of_birth=?, gender=?, address=?, contact=?, next_of_kin=?, image =? WHERE patient_id =?';
+    const sql = 'UPDATE patient SET full_name =?, date_of_birth=?, gender=?, address=?, contact=?, next_of_kin=? WHERE patient_id =?';
 
     //Insert the new patient into the database
     connection.query(sql,[full_name, date_of_birth, gender, address, contact, next_of_kin, patient_id], (error,results) =>{
