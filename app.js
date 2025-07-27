@@ -164,7 +164,23 @@ app.post('/editPatient/:id',checkAuthenticated, checkAdmin,(req, res) => {
     })
 })
 
+//jazz
+//delete route
+app.get('/deletepatient/:id', (req, res) => {
+    const productId = req.params.id;
 
+    connection.query('DELETE FROM products WHERE patient_id = ?', [patient_id], (error, results) => {
+        if (error) {
+            // Handle any error that occurs during the database operation
+            console.error("Error deleting product:", error);
+            res.status(500).send('Error deleting product');
+        } else {
+            // Send a success response
+            res.redirect('/inventory');
+        }
+    });
+});
+//jazz
 
 
 //Khine's---
