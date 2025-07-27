@@ -30,28 +30,28 @@
         <br>
         <div class="text-center">
           <% if (patient) { %> 
-            <form action="/editdata/<%= patient.patient_id %>" method="POST" enctype="multipart/form-data">
-                <label for="name">patient Name:</label><br>
-                <input type="text" id="name" name="name" value = "<%= patient.full_name %>" required><br><br>
+            <form action="/editPatient/<%= patient.patient_id %>" method="POST" enctype="multipart/form-data">
+              <label for="full_name">Patient Name:</label><br>
+              <input type="text" id="full_name" name="full_name" value="<%= patient.full_name %>" required><br><br>
 
-                <label for="DOB">Date of birth:</label><br>
-                <input type="date" id="DOB" name="DOB" value = "<%= patient.date_of_birth %>" required><br><br>
+              <label for="date_of_birth">Date of Birth:</label><br>
+              <input type="date" id="date_of_birth" name="date_of_birth" value="<%= patient.date_of_birth %>" required><br><br>
 
-                <label for="gender">gender:</label><br>
-                <input type="text" id="gender" name="gender" value = "<%= patient.gender %>" required><br><br>
+              <label for="gender">Gender:</label><br>
+              <input type="text" id="gender" name="gender" value="<%= patient.gender %>" required><br><br>
 
-                <label for="address">address:</label><br>
-                <input type="text" id="address" name="address" value = "<%= patient.address %>" required><br><br>
+              <label for="address">Address:</label><br>
+              <input type="text" id="address" name="address" value="<%= patient.address %>" required><br><br>
 
-                <label for="contact">contact:</label><br>
-                <input type="text" id="phone" name="phone" value = "<%= patient.phone %>" required><br><br>
+              <label for="contact">Contact:</label><br>
+              <input type="text" id="contact" name="contact" value="<%= patient.contact %>" required><br><br>
 
-                <label for="next_of_kin">next_of_kin:</label><br>
-                <input type="text" id="next_of_kin" name="next_of_kin" value = "<%= patient.next_of_kin %>" required><br><br>
+              <label for="next_of_kin">Next of Kin:</label><br>
+              <input type="text" id="next_of_kin" name="next_of_kin" value="<%= patient.next_of_kin %>" required><br><br>
 
-                
-                <button type="submit">Update patient</button>
+              <button type="submit">Update Patient</button>
             </form>
+
           <% } else { %>
               <p>No patient found.</p>
           <% } %>
