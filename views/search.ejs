@@ -16,9 +16,9 @@
           </button>
           <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-              <% if (user.role === "admin") { %>
+              <% if (users.role === "admin") { %>
                 <li class="nav-item">
-                  <a class="nav-link" href="/paitentList">View Patients</a>
+                  <a class="nav-link" href="/patientList">View Patients</a>
                 </li> 
                 <li class="nav-item">
                   <a class="nav-link" href="/addPatient">Add new Patient</a>
@@ -38,7 +38,7 @@
     <h3>Search Patients by ID</h3>
     <form method="GET" action="/search" class="row g-3 mb-4">
       <div class="col-md-6">
-        <input type="text" name="q" class="form-control" placeholder="Enter patient ID" value="<%= q || '' %>">
+        <input type="text" id="patient_id" name="patient_id" class="form-control" placeholder="Enter patient ID" value="<%= q || '' %>">
       </div>
       <div class="col-md-2">
         <button type="submit" class="btn btn-primary">Search</button>
@@ -50,16 +50,15 @@
         <div class="card mb-3">
           <div class="card-body">
             <h5 class="card-title">
-              <a href="/patient/<%= patient.patientId %>">
-                <%= patient.patientName %>
-              <%= patient.full_name %>
-            </a>
+              <a href="/patient/<%= patient.patient_id %>">
+                  <%= patient.full_name %>
+              </a>
           </h5>
           <p class="card-text">DOB: <%= patient.date_of_birth %></p>
+          <p class="card-text">Condition: <%= patient.condition %></p>
           <p class="card-text">Gender: <%= patient.gender %></p>
           <p class="card-text">Contact: <%= patient.contact %></p>
           <p class="card-text">Address: <%= patient.address %></p>
-          <p class="card-text">Contact: <%= patient.contact %></p>
           <p class="card-text">Next of Kin: <%= patient.next_of_kin %></p>
           </div>
         </div>
