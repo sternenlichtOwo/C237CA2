@@ -16,7 +16,7 @@
           </button>
           <div class="collapse navbar-collapse" id="collapsibleNavbar">
             <ul class="navbar-nav">
-              <% if (users.role === "admin") { %>
+              <% if (users.role === "admin" || users.role === "user") { %>
                 <li class="nav-item">
                   <a class="nav-link" href="/patientList">View Patients</a>
                 </li> 
