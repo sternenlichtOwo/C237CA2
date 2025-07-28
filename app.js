@@ -4,11 +4,11 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const app = express();
 
-// ✅ MySQL connection
+
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'Republic_C207',
   database: 'c237_imh'
 });
 
@@ -20,10 +20,12 @@ connection.connect((err) => {
   console.log('Connected to MySQL database');
 });
 
-// ✅ Middleware
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 
 app.use(session({
   secret: 'secret',
@@ -33,7 +35,7 @@ app.use(session({
 }));
 app.use(flash());
 
-// ✅ Auth middlewares
+
 const checkAuthenticated = (req, res, next) => {
   if (req.session.user) {
     return next();
@@ -51,15 +53,18 @@ const checkAdmin = (req, res, next) => {
     res.redirect('/');
   }
 };
+// !!! Start of Routes !!! // 
 
-// ✅ Routes
 
-// Home
+// Dashboard
 app.get('/', (req, res) => {
   res.render('index', { user: req.session.user });
 });
 
-// Register
+
+// !!! Start of Sign up and Login Routes !!! FADIAH =============================================== //
+
+// Register page fadiah
 app.get('/register', (req, res) => {
   res.render('register', {
     messages: req.flash('error'),
@@ -68,9 +73,9 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  const { username, email, password, address, contact } = req.body;
+  const { username, email, password, address, contact, role } = req.body;
 
-  if (!username || !email || !password || !address || !contact) {
+  if (!username || !email || !password || !address || !contact || !role) {
     req.flash('error', 'All fields are required.');
     req.flash('formData', req.body);
     return res.redirect('/register');
@@ -82,8 +87,8 @@ app.post('/register', (req, res) => {
     return res.redirect('/register');
   }
 
-  const sql = 'INSERT INTO users (username, email, password, address, contact) VALUES (?, ?, SHA1(?), ?, ?)';
-  connection.query(sql, [username, email, password, address, contact], (err, result) => {
+  const sql = 'INSERT INTO users (username, email, password, address, contact, role) VALUES (?, ?, SHA1(?), ?, ?, ?)';
+  connection.query(sql, [username, email, password, address, contact, role], (err, result) => {
     if (err) {
       console.error(err);
       req.flash('error', 'Error registering user.');
@@ -94,7 +99,7 @@ app.post('/register', (req, res) => {
   });
 });
 
-// Login
+// Login page fadiah
 app.get('/login', (req, res) => {
   res.render('login', {
     messages: req.flash('success'),
@@ -121,7 +126,7 @@ app.post('/login', (req, res) => {
     if (results.length > 0) {
       req.session.user = results[0];
       req.flash('success', 'Login successful!');
-      res.redirect('/dashboard');
+      res.redirect('/');
     } else {
       req.flash('error', 'Invalid email or password.');
       res.redirect('/login');
@@ -129,18 +134,35 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Dashboard
-app.get('/dashboard', checkAuthenticated, (req, res) => {
-  res.send(`Welcome, ${req.session.user.username}`);
-});
-
-// Logout
+// Logout page fadiah
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/login');
 });
 
-// Add patient
+// !!! Start of View/List Items !!! VILASINI =================================================== //
+
+// GET /patientList vilasini
+app.get('/patientList', (req, res) => {
+  const sql = 'SELECT * FROM patient';
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    // Pass BOTH patients and the logged-in user from the session
+    res.render('patientList', {
+      patients: results,
+      user: req.session.user 
+    });
+  });
+});
+
+// !!! Start of Add Patient !!! KHINE ==================================================== //
+
+// Add get patient 
 app.get('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
   res.render('addPatient', {
     user: req.session.user,
@@ -152,17 +174,19 @@ app.get('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
   });
 });
 
+// Add post patient 
 app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
-  const { full_name, date_of_birth, gender, address, contact, next_of_kin } = req.body;
+  console.log('Received body:', req.body);
+  const { full_name, date_of_birth, medical_condition, gender, address, contact, next_of_kin, admission_date } = req.body;
 
-  if (!full_name || !date_of_birth || !gender || !address || !contact || !next_of_kin) {
+  if (!full_name || !date_of_birth || !medical_condition || !gender || !address || !contact || !next_of_kin || !admission_date) {
     req.flash('error', 'All fields must be filled in.');
     req.flash('formData', req.body);
     return res.redirect('/addPatient');
   }
 
-  const sql = 'INSERT INTO patients (full_name, date_of_birth, gender, address, contact, next_of_kin) VALUES (?, ?, ?, ?, ?, ?)';
-  connection.query(sql, [full_name, date_of_birth, gender, address, contact, next_of_kin], (err, result) => {
+  const sql = 'INSERT INTO patient (full_name, date_of_birth, medical_condition, gender, address, contact, next_of_kin, admission_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+  connection.query(sql, [full_name, date_of_birth, medical_condition, gender, address, contact, next_of_kin, admission_date], (err, result) => {
     if (err) {
       console.error(err);
       req.flash('error', 'Error adding patient.');
@@ -174,10 +198,12 @@ app.post('/addPatient', checkAuthenticated, checkAdmin, (req, res) => {
   });
 });
 
-// Edit patient
+// !!! Start of Edit Patient !!! FREDERICK ==================================================== //
+
+// Get edit patient 
 app.get('/editpage/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
   const patient_id = req.params.patient_id;
-  const sql = 'SELECT * FROM patients WHERE patient_id = ?';
+  const sql = 'SELECT * FROM patient WHERE patient_id = ?';
 
   connection.query(sql, [patient_id], (err, results) => {
     if (err) {
@@ -186,72 +212,90 @@ app.get('/editpage/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
     }
 
     if (results.length > 0) {
-      res.render('editpage', { patient: results[0] });
+      res.render('editpage', { 
+        patient: results[0],
+        user: req.session.user
+      });
     } else {
       res.status(404).send('Patient not found.');
     }
   });
 });
 
-app.post('/editPatient/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
-  const patient_id = req.params.patient_id;
-  const { full_name, date_of_birth, gender, address, contact, next_of_kin } = req.body;
 
-  if (!full_name || !date_of_birth || !gender || !address || !contact || !next_of_kin) {
+// Post edit patient 
+app.post('/editpage/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
+  const patient_id = req.params.patient_id;
+  const { full_name, date_of_birth, medical_condition, gender, address, contact, next_of_kin, admission_date } = req.body;
+
+  if (!full_name || !date_of_birth || !medical_condition || !gender || !address || !contact || !next_of_kin || !admission_date) {
     return res.status(400).send('All fields are required.');
   }
 
-  const sql = 'UPDATE patients SET full_name = ?, date_of_birth = ?, gender = ?, address = ?, contact = ?, next_of_kin = ? WHERE patient_id = ?';
-  connection.query(sql, [full_name, date_of_birth, gender, address, contact, next_of_kin, patient_id], (err, result) => {
+  const sql = 'UPDATE patient SET full_name = ?, date_of_birth = ?, medical_condition = ?, gender = ?, address = ?, contact = ?, next_of_kin = ?, admission_date = ? WHERE patient_id = ?';
+  connection.query(sql, [full_name, date_of_birth, medical_condition, gender, address, contact, next_of_kin, admission_date, patient_id], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Error updating patient.');
+      
     }
-    res.redirect('/');
-  });
+    res.redirect('/patientList');
+  });``
 });
 
-// Delete patient
-app.get('/deletePatient/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
+// !!! Start of Delete Patient !!! JAZIRI ============================================================= //
+
+// Delete patient 
+app.post('/deletePatient/:patient_id', checkAuthenticated, checkAdmin, (req, res) => {
   const patient_id = req.params.patient_id;
-  const sql = 'DELETE FROM patients WHERE patient_id = ?';
+  const sql = 'DELETE FROM patient WHERE patient_id = ?';
 
   connection.query(sql, [patient_id], (err, result) => {
     if (err) {
       console.error(err);
       return res.status(500).send('Error deleting patient.');
     }
-    res.redirect('/');
+    res.redirect('/patientList');
   });
 });
 
-// Search patient
+// !!! Start of Search Patient !!! NICHOLAS ============================================================= //
+//Search patient
 app.get('/search', checkAuthenticated, (req, res) => {
   const patient_id = req.query.patient_id;
 
+  // If no search input, render with empty patients array and no q
   if (!patient_id) {
-    return res.render('search', {users: req.session.user, q: '', patients: []});
+    return res.render('search', { 
+      patients: [], 
+      q: '', 
+      users: req.session.user  // use same key as in EJS
+    });
   }
 
-  const sql = 'SELECT * FROM patient WHERE patient_id = ?';
+  const patientSql = 'SELECT * FROM patient WHERE patient_id = ?';
 
-  connection.query(sql, [patient_id], (err, results) => {
+  connection.query(patientSql, [patient_id], (err, results) => {
     if (err) {
-      console.error("Database query error:", err);
-      return res.status(500).send("Server Error");
+      console.error(err);
+      return res.status(500).send('Error searching patient.');
     }
 
-    
-    res.render('search', {users: req.session.user, patients: results, q: patient_id });
+    res.render('search', { 
+      patients: results,          
+      q: patient_id,              
+      users: req.session.user     
+    });
   });
 });
 
 
-// 404
+
+// !!! Start of 404 Error Handling !!! //
 app.use((req, res) => {
   res.status(404).send('404 Not Found');
 });
 
-// ✅ Run server
+// Run server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
