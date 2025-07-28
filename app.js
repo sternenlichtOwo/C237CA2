@@ -6,10 +6,10 @@ const app = express();
 
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Republic_C207',
-  database: 'c237_imh'
+  host: 'jux8dy.h.filess.io',
+  user: '123456_sayoldest',
+  password: '78794d4d85f48bccf75775e215cd54e5c0b3b74b',
+  database: '123456_sayoldest'
 });
 
 connection.connect((err) => {
