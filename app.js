@@ -230,21 +230,45 @@ app.get('/search', checkAuthenticated, (req, res) => {
   const patient_id = req.query.patient_id;
 
   if (!patient_id) {
-    return res.render('search', {});
+    return res.render('search', {users: req.session.user, q: '', patients: []});
   }
 
-  const sql = 'SELECT * FROM patients WHERE patient_id = ?';
+  const sql = 'SELECT * FROM patient WHERE patient_id = ?';
+
   connection.query(sql, [patient_id], (err, results) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send('Error searching patient.');
+      console.error("Database query error:", err);
+      return res.status(500).send("Server Error");
     }
 
-    if (results.length > 0) {
-      res.render('search', { patient: results[0] });
-    } else {
-      res.render('search', { notFound: true });
+    
+    res.render('search', {users: req.session.user, patients: results, q: patient_id });
+  });
+});
+
+//Critical for search to work
+app.get('/patient/:id', checkAuthenticated, (req, res) => {
+  const patientId = req.params.id;
+  const query = 'SELECT * FROM patients WHERE patient_id = ?';
+
+  db.query(query, [patientId], (err, results) => {
+    if (err) {
+      console.error('Error fetching patient details:', err);
+      return res.status(500).send('Internal Server Error');
     }
+
+    if (results.length === 0) {
+      return res.status(404).send('Patient not found');
+    }
+
+    const patient = results[0];
+
+    res.render('patient', {
+      user: req.session.user,
+      patient: patient,
+      formData: null,
+      messages: {}
+    });
   });
 });
 
