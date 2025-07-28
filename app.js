@@ -7,6 +7,7 @@ const app = express();
 
 const connection = mysql.createConnection({
   host: 'jux8dy.h.filess.io',
+  port: 3307,
   user: '123456_sayoldest',
   password: '78794d4d85f48bccf75775e215cd54e5c0b3b74b',
   database: '123456_sayoldest'
