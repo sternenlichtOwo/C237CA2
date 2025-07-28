@@ -264,28 +264,20 @@ app.post('/deletePatient/:patient_id', checkAuthenticated, checkAdmin, (req, res
 app.get('/search', checkAuthenticated, (req, res) => {
   const patient_id = req.query.patient_id;
 
-  // If no search input, render with empty patients array and no q
   if (!patient_id) {
-    return res.render('search', { 
-      patients: [], 
-      q: '', 
-      users: req.session.user  // use same key as in EJS
-    });
+    return res.render('search', {users: req.session.user, q: '', patients: []});
   }
 
-  const patientSql = 'SELECT * FROM patient WHERE patient_id = ?';
+  const sql = 'SELECT * FROM patient WHERE patient_id = ?';
 
-  connection.query(patientSql, [patient_id], (err, results) => {
+  connection.query(sql, [patient_id], (err, results) => {
     if (err) {
-      console.error(err);
-      return res.status(500).send('Error searching patient.');
+      console.error("Database query error:", err);
+      return res.status(500).send("Server Error");
     }
 
-    res.render('search', { 
-      patients: results,          
-      q: patient_id,              
-      users: req.session.user     
-    });
+    
+    res.render('search', {users: req.session.user, patients: results, q: patient_id });
   });
 });
 
