@@ -246,31 +246,6 @@ app.get('/search', checkAuthenticated, (req, res) => {
   });
 });
 
-//Critical for search to work
-app.get('/patient/:id', checkAuthenticated, (req, res) => {
-  const patientId = req.params.id;
-  const query = 'SELECT * FROM patients WHERE patient_id = ?';
-
-  db.query(query, [patientId], (err, results) => {
-    if (err) {
-      console.error('Error fetching patient details:', err);
-      return res.status(500).send('Internal Server Error');
-    }
-
-    if (results.length === 0) {
-      return res.status(404).send('Patient not found');
-    }
-
-    const patient = results[0];
-
-    res.render('patient', {
-      user: req.session.user,
-      patient: patient,
-      formData: null,
-      messages: {}
-    });
-  });
-});
 
 // 404
 app.use((req, res) => {
