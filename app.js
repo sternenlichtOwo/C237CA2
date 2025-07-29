@@ -15,11 +15,11 @@ setInterval(() => {
 }, 5 * 60 * 1000);
 
 const connection = mysql.createConnection({
-  host: 'jux8dy.h.filess.io',
+  host: 'now08b.h.filess.io',
   port: 3307,
-  user: '123456_sayoldest',
-  password: '78794d4d85f48bccf75775e215cd54e5c0b3b74b',
-  database: '123456_sayoldest'
+  user: '1214124_marketdry',
+  password: 'd4a4f097bbf930a8cc8606181538fb4b9838cf43',
+  database: '1214124_marketdry'
 });
 
 connection.connect((err) => {
