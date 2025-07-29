@@ -4,6 +4,15 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const app = express();
 
+setInterval(() => {
+  connection.query('SELECT 1', (err) => {
+    if (err) {
+      console.error('Keep-alive ping failed:', err);
+    } else {
+      console.log('Keep-alive ping sent.');
+    }
+  });
+}, 5 * 60 * 1000);
 
 const connection = mysql.createConnection({
   host: 'jux8dy.h.filess.io',
